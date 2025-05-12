@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata = {
   title: "FixTogether",
   description: "Community-driven platform for reporting and fixing local issues",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({ children }) {
@@ -17,4 +17,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   )
-}
+} 
