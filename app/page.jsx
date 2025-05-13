@@ -4,57 +4,10 @@ import { ArrowRight, MapPin, DollarSign, Wrench, CheckCircle } from "lucide-reac
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="bg-emerald-600 text-white">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">FixTogether</h1>
-            <nav className="hidden md:block">
-              <ul className="flex space-x-6">
-                <li>
-                  <Link href="/" className="hover:underline">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/report" className="hover:underline">
-                    Report Issue
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/donate" className="hover:underline">
-                    Donate
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/fix" className="hover:underline">
-                    Fix Issues
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:underline">
-                    About
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-            <button className="md:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+     
 
       {/* Hero Section */}
-      <section className="bg-emerald-600 text-white py-16">
+      <section className="bg-emerald-600 text-white py-32">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Fix Your Community Together</h1>
