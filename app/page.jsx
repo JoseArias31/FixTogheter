@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ArrowRight, MapPin, DollarSign, Wrench, CheckCircle } from "lucide-react"
+import { SignedIn, SignedOut,SignInButton } from '@clerk/nextjs'
 
 export default function Home() {
   return (
@@ -15,12 +16,22 @@ export default function Home() {
               Report local issues, fund solutions, and help fix problems in your neighborhood.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/report"
-                className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center"
-              >
-                Report an Issue <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              <SignedIn>
+                <Link
+                  href="/report"
+                  className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center"
+                >
+                  Report an Issue <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center">
+                    Sign in to Report an Issue <ArrowRight className="ml-2 h-5 w-5" />
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              
               <Link
                 href="/browse"
                 className="bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-800 transition-colors flex items-center justify-center"
