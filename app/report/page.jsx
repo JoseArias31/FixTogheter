@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Camera, MapPin, AlertCircle } from "lucide-react"
 import Link from "next/link"
+import { useUser } from '@clerk/nextjs'
 
 export default function ReportIssuePage() {
+  const { user } = useUser();
   const [location, setLocation] = useState(null)
   const [isLocating, setIsLocating] = useState(false)
   const [files, setFiles] = useState([])
@@ -13,7 +15,22 @@ export default function ReportIssuePage() {
     title: "",
     description: "",
     priority: "medium",
+    name: "",
+    organization: "",
+    email: "",
+    phone: "",
+    address: "",
   })
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.fullName || user.username || "",
+        email: user.primaryEmailAddress?.emailAddress || ""
+      }));
+    }
+  }, [user]);
 
   const handleGetLocation = () => {
     setIsLocating(true)
@@ -57,12 +74,23 @@ export default function ReportIssuePage() {
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", { ...formData, location, files })
-    alert("Issue reported successfully! Thank you for your contribution.")
-    // Reset form or redirect
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch('/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        location,
+        files: files.map(f => f.name) // For now, just file names; for production, upload to storage and use URLs
+      })
+    });
+    if (response.ok) {
+      alert('Issue reported successfully! Thank you for your contribution.');
+      // Optionally reset form or redirect
+    } else {
+      alert('There was an error reporting the issue.');
+    }
   }
 
   return (
@@ -158,6 +186,64 @@ export default function ReportIssuePage() {
                 </div>
               </div>
 
+              {/* Name */}
+              <div className="mb-6">
+                <label htmlFor="name" className="block text-gray-700 font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Your name"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  required
+                />
+              </div>
+
+              {/* Organization */}
+              <div className="mb-6">
+                <label htmlFor="organization" className="block text-gray-700 font-medium mb-2">Organization</label>
+                <input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  value={formData.organization}
+                  onChange={handleInputChange}
+                  placeholder="Your organization (optional)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              {/* Gmail */}
+              <div className="mb-6">
+                <label htmlFor="gmail" className="block text-gray-700 font-medium mb-2">Email Address</label>
+                <input
+                  type="email"
+                  id="gmail"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Your Email address"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  required
+                />
+              </div>
+
+              {/* Phone */}
+              <div className="mb-6">
+                <label htmlFor="phone" className="block text-gray-700 font-medium mb-2">Phone (optional)</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="Your phone number (optional)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
               {/* Location */}
               <div className="mb-6">
                 <label className="block text-gray-700 font-medium mb-2">Location</label>
@@ -182,6 +268,20 @@ export default function ReportIssuePage() {
                     </p>
                   </div>
                 )}
+              </div>
+
+              {/* Address (after Location) */}
+              <div className="mb-6">
+                <label htmlFor="address" className="block text-gray-700 font-medium mb-2">Address</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  placeholder="Street address, city, etc."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
               </div>
 
               {/* Photo/Video Upload */}
@@ -211,6 +311,11 @@ export default function ReportIssuePage() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {files.map((file, index) => (
                         <div key={index} className="relative bg-gray-100 p-2 rounded-lg">
+                          {file.type && file.type.startsWith('image') ? (
+                            <img src={URL.createObjectURL(file)} alt={file.name} className="w-full h-24 object-cover rounded mb-2" />
+                          ) : file.type && file.type.startsWith('video') ? (
+                            <video src={URL.createObjectURL(file)} controls className="w-full h-24 object-cover rounded mb-2" />
+                          ) : null}
                           <p className="text-sm truncate">{file.name}</p>
                           <button
                             type="button"
