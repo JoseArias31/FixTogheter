@@ -16,7 +16,7 @@ export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm">
+    <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm ">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo a la izquierda */}
