@@ -1,16 +1,60 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Search, Filter, PenToolIcon as Tool, Clock, ArrowUpRight } from "lucide-react"
+import {supabase} from "@/lib/supabaseClient"
 
 export default function FixPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState("all")
   const [skillFilter, setSkillFilter] = useState("all")
+  const [issues, setIssues] = useState([])
 
-  // Mock data for issues that need fixing
-  const issues = [
+  useEffect(() => {
+    const fetchIssues = async () => {
+      const { data, error } = await supabase
+        .from("issues")
+        .select(`
+          id,
+          title,
+          description,
+          address,
+          organization,
+          image_urls
+        `)
+
+      if (error) {
+        console.error("Error fetching issues:", error)
+        return
+      }
+
+      const formattedIssues = data.map(issue => ({
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        location: issue.address || "",
+        organization: issue.organization || "",
+        // name: issue.users?.name || "",
+        // Keep hardcoded values as requested
+        skills: ["carpentry", "welding"],
+        estimatedTime: "4-6 hours",
+        difficulty: "medium",
+        status: "funded",
+        compensation: 250,
+        // Use the first image from image_urls or fallback to placeholder
+        images: issue.image_urls?.length ? [issue.image_urls[0]] : ["/placeholder.svg?height=200&width=300"],
+        category: "parks" // Default category for filtering
+      }))
+
+      setIssues(formattedIssues)
+    }
+
+    fetchIssues()
+  }, [])
+
+  // Real issues loaded from Supabase with some hardcoded values
+  const fetchedIssues = [
     {
       id: 1,
       title: "Broken Playground Equipment at Central Park",
@@ -66,7 +110,7 @@ export default function FixPage() {
   ]
 
   // Filter issues based on search term, category filter, and skill filter
-  const filteredIssues = issues.filter((issue) => {
+  const filteredIssues = issues?.filter((issue) => {
     const matchesSearch =
       issue.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       issue.description.toLowerCase().includes(searchTerm.toLowerCase())
