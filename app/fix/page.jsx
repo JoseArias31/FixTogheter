@@ -20,7 +20,8 @@ export default function FixPage() {
           title,
           description,
           address,
-          organization,
+          organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
+
           image_urls
         `)
 
@@ -34,14 +35,17 @@ export default function FixPage() {
         title: issue.title,
         description: issue.description,
         location: issue.address || "",
+        country: issue.country || "",
+        city: issue.city || "",
+        province: issue.province || "",
         organization: issue.organization || "",
         // name: issue.users?.name || "",
         // Keep hardcoded values as requested
-        skills: ["carpentry", "welding"],
-        estimatedTime: "4-6 hours",
-        difficulty: "medium",
+        skills: issue.skillsNeeded || "Overall Skills",
+        estimatedTime: issue.estimateTime || "1-2 hours",
+        difficulty: issue.difficulty || "medium",
         status: "funded",
-        compensation: 250,
+        compensation: issue.compensation || 0,
         // Use the first image from image_urls or fallback to placeholder
         images: issue.image_urls?.length ? [issue.image_urls[0]] : ["/placeholder.svg?height=200&width=300"],
         category: "parks" // Default category for filtering
@@ -113,7 +117,10 @@ export default function FixPage() {
   const filteredIssues = issues?.filter((issue) => {
     const matchesSearch =
       issue.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      issue.description.toLowerCase().includes(searchTerm.toLowerCase())
+      issue.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      issue.country.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      issue.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      issue.province.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesFilter = filter === "all" || issue.category === filter
     const matchesSkill = skillFilter === "all" || issue.skills.includes(skillFilter)
     return matchesSearch && matchesFilter && matchesSkill
@@ -219,6 +226,11 @@ export default function FixPage() {
                         {issue.status === "funded" ? "Funded" : "Pending Funding"}
                       </span>
                     </div>
+                    <div className="flex flex-row items-center gap-2">
+                    <p className="text-gray-500 text-sm mb-3">{issue.country},</p>
+                    <p className="text-gray-500 text-sm mb-3">{issue.city},</p>
+                    <p className="text-gray-500 text-sm mb-3">{issue.province}</p>
+                    </div>
                     <p className="text-gray-500 text-sm mb-3">{issue.location}</p>
                     <p className="text-gray-700 mb-4">{issue.description}</p>
 
@@ -238,7 +250,7 @@ export default function FixPage() {
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-xs text-gray-500">Skills Needed</p>
-                        <p className="font-medium capitalize">{issue.skills.join(", ")}</p>
+                        <p className="font-medium capitalize">{issue.skills}</p>
                       </div>
                     </div>
 
