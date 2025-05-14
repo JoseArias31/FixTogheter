@@ -85,12 +85,12 @@ export async function POST(req) {
 
     const {
       category, phone, organization, title, description, priority,
-      location, address, files, images
+      location, address, files, images, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
     } = await req.json();
 
     console.log('Received form data:', {
       category, title, description, priority,
-      location, address, phone, organization,
+      location, address, phone, organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
       filesCount: files?.length,
       imagesCount: images?.length
     });
@@ -184,7 +184,7 @@ export async function POST(req) {
       description,
       phone,
       organization,
-      priority,
+      priority, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
       hasLocation: !!location,
       hasAddress: !!address,
       filesCount: files?.length,
@@ -201,7 +201,7 @@ export async function POST(req) {
         description,
         phone,
         organization,
-        priority,
+        priority, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
         latitude: location?.latitude ?? null,
         longitude: location?.longitude ?? null,
         address: address ?? null,

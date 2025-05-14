@@ -252,6 +252,58 @@ export default function ReportIssuePage() {
                   required
                 ></textarea>
               </div>
+                {/* Details */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-gray-50 p-2 rounded">
+                       
+                        <label htmlFor="compensation" className="block text-gray-700 font-medium mb-2">Compensation</label>
+                <input
+                  type="number"
+                  id="compensation"
+                  name="compensation"
+                  value={formData.compensation}
+                  onChange={handleInputChange}
+                  placeholder="Add a Donation (optional)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded">
+                         <label htmlFor="estimateTime" className="block text-gray-700 font-medium mb-2">Estimate Time</label>
+                <input
+                  type="text"
+                  id="estimateTime"
+                  name="estimateTime"
+                  value={formData.estimateTime}
+                  onChange={handleInputChange}
+                  placeholder="Add and Estimate Time (optional)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded">
+                         <label htmlFor="difficulty" className="block text-gray-700 font-medium mb-2">Difficulty</label>
+                <input
+                  type="text"
+                  id="difficulty"
+                  name="difficulty"
+                  value={formData.difficulty}
+                  onChange={handleInputChange}
+                  placeholder="Choose a difficulty"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded">
+                         <label htmlFor="skillsNeeded" className="block text-gray-700 font-medium mb-2">Skills Needed</label>
+                <input
+                  type="text"
+                  id="skillsNeeded"
+                  name="skillsNeeded"
+                  value={formData.skillsNeeded}
+                  onChange={handleInputChange}
+                  placeholder="Choose skills needed"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                      </div>
+                    </div>
 
               {/* Priority */}
               <div className="mb-6">
@@ -356,8 +408,52 @@ export default function ReportIssuePage() {
                   </div>
                 )}
               </div>
+<div className="flex flex-col sm:flex-row sm:gap-4 justify-between">
+ {/* Country (after Location) */}
+              <div className="mb-6">
+                <label htmlFor="country" className="block text-gray-700 font-medium mb-2">Country</label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  placeholder="Country"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+              {/* City (after Location) */}
+              <div className="mb-6">
+                <label htmlFor="city" className="block text-gray-700 font-medium mb-2">City</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="City"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+                {/* Province (after Location) */}
+              <div className="mb-6">
+                <label htmlFor="province" className="block text-gray-700 font-medium mb-2">Province</label>
+                <input
+                  type="text"
+                  id="province"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleInputChange}
+                  placeholder="Province"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+              
+              </div>
 
-              {/* Address (after Location) */}
+             
+ 
+              {/* Local Address (after Location) */}
               <div className="mb-6">
                 <label htmlFor="address" className="block text-gray-700 font-medium mb-2">Address</label>
                 <input
@@ -366,10 +462,11 @@ export default function ReportIssuePage() {
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="Street address, city, etc."
+                  placeholder="Address"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 />
               </div>
+             
 
               {/* Photo/Video Upload */}
               <div className="mb-6">
