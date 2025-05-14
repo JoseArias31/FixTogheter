@@ -84,13 +84,13 @@ export async function POST(req) {
     console.log('User authenticated:', userId);
 
     const {
-      category, title, description, priority,
+      category, phone, organization, title, description, priority,
       location, address, files, images
     } = await req.json();
 
     console.log('Received form data:', {
       category, title, description, priority,
-      location, address,
+      location, address, phone, organization,
       filesCount: files?.length,
       imagesCount: images?.length
     });
@@ -182,6 +182,8 @@ export async function POST(req) {
       category,
       title,
       description,
+      phone,
+      organization,
       priority,
       hasLocation: !!location,
       hasAddress: !!address,
@@ -197,6 +199,8 @@ export async function POST(req) {
         category,
         title,
         description,
+        phone,
+        organization,
         priority,
         latitude: location?.latitude ?? null,
         longitude: location?.longitude ?? null,

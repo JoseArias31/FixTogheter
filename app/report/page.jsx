@@ -302,7 +302,7 @@ export default function ReportIssuePage() {
                 />
               </div>
 
-              {/* Gmail */}
+              {/* Email Address */}
               <div className="mb-6">
                 <label htmlFor="gmail" className="block text-gray-700 font-medium mb-2">Email Address</label>
                 <input
