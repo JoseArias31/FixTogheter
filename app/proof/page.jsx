@@ -20,6 +20,7 @@ export default function ProofPage() {
     { id: "ISS-9012", title: "Graffiti on Community Center" },
   ]
 
+
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files)
     setFiles([...files, ...selectedFiles])

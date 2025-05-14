@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Camera, MapPin, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useUser } from '@clerk/nextjs'
+import { uploadImage } from "@/lib/storage/cliente";
+import { deleteImageFromBucket } from "@/lib/storage/deleteImageFromBucket";
 
 export default function ReportIssuePage() {
   const { user } = useUser();
@@ -66,6 +68,29 @@ export default function ReportIssuePage() {
     setFiles(newFiles)
   }
 
+  const handleSave = async (e) => {
+    e.preventDefault();
+     // 2. Upload new images (those with File objects)
+     for (const img of (currentProduct.images || [])) {
+      if (img.file) {
+        const { imageUrl, error } = await uploadImage({ file: img.file, bucket: "fixtogether" });
+        if (!error && imageUrl) {
+          await supabase.from("productimages").insert({
+            product_id: productId,
+            url: imageUrl,
+            alt: img.alt || "",
+          });
+        }
+      }
+    }
+  }
+
+  //This is an example of how to delete images from the storage
+  // await deleteImageFromBucket(img.url, "images");
+  // // Remove from productimages table
+  // await supabase.from("productimages(This table is fake)").delete().eq("id", img.id);
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData({
@@ -76,20 +101,82 @@ export default function ReportIssuePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/api/report', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    console.log('Starting form submission...');
+    
+    try {
+      // Validate required fields
+      const requiredFields = ['category', 'title', 'description'];
+      const missingFields = requiredFields.filter(field => !formData[field]);
+      
+      if (missingFields.length > 0) {
+        console.error('Missing required fields:', missingFields);
+        alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+        return;
+      }
+
+      console.log('Form data:', formData);
+      console.log('Location:', location);
+      console.log('Files:', files);
+
+      // Convert image files to base64
+      const imageFiles = files.filter(f => f.type.startsWith('image/'));
+      const imagePromises = imageFiles.map(file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      }));
+
+      console.log('Converting images to base64...');
+      const base64Images = await Promise.all(imagePromises);
+      console.log('Converted', base64Images.length, 'images');
+
+      // Prepare the request body
+      const requestBody = {
         ...formData,
         location,
-        files: files.map(f => f.name) // For now, just file names; for production, upload to storage and use URLs
-      })
-    });
-    if (response.ok) {
-      alert('Issue reported successfully! Thank you for your contribution.');
-      // Optionally reset form or redirect
-    } else {
-      alert('There was an error reporting the issue.');
+        files: files.map(f => f.name),
+        images: base64Images
+      };
+
+      console.log('Sending request with body:', {
+        ...requestBody,
+        images: `${base64Images.length} images`
+      });
+
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Issue reported successfully:', data);
+        alert('Issue reported successfully! Thank you for your contribution.');
+        
+        // Reset form
+        setFormData({
+          category: "",
+          title: "",
+          description: "",
+          priority: "medium",
+          name: user?.fullName || user?.username || "",
+          organization: "",
+          email: user?.primaryEmailAddress?.emailAddress || "",
+          phone: "",
+          address: "",
+        });
+        setFiles([]);
+        setLocation(null);
+      } else {
+        console.error('Error reporting issue:', data.error);
+        alert(`Error reporting issue: ${data.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      alert('An unexpected error occurred. Please try again.');
     }
   }
 
