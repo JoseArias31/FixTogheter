@@ -283,39 +283,76 @@ export default function ReportIssuePage() {
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                          <label htmlFor="estimateTime" className="block text-gray-700 font-medium mb-2">Estimate Time</label>
-                <input
-                  type="text"
-                  id="estimateTime"
-                  name="estimateTime"
-                  value={formData.estimateTime}
-                  onChange={handleInputChange}
-                  placeholder="Add and Estimate Time (optional)"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
+                         <select
+  id="estimateTime"
+  name="estimateTime"
+  value={formData.estimateTime}
+  onChange={handleInputChange}
+  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+  required
+>
+  <option value="">Select estimated time</option>
+  {[...Array(24)].map((_, i) => (
+    <option key={i + 1} value={i + 1}>
+      {i + 1} {i + 1 === 1 ? 'hour' : 'hours'}
+    </option>
+  ))}
+</select>
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                          <label htmlFor="difficulty" className="block text-gray-700 font-medium mb-2">Difficulty</label>
-                <input
-                  type="text"
-                  id="difficulty"
-                  name="difficulty"
-                  value={formData.difficulty}
-                  onChange={handleInputChange}
-                  placeholder="Choose a difficulty"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
+                         <select
+  id="difficulty"
+  name="difficulty"
+  value={formData.difficulty}
+  onChange={handleInputChange}
+  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+  required
+>
+  <option value="">Select difficulty</option>
+  <option value="easy">Easy</option>
+  <option value="medium">Medium</option>
+  <option value="hard">Hard</option>
+</select>
+
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                          <label htmlFor="skillsNeeded" className="block text-gray-700 font-medium mb-2">Skills Needed</label>
-                <input
-                  type="text"
-                  id="skillsNeeded"
-                  name="skillsNeeded"
-                  value={formData.skillsNeeded}
-                  onChange={handleInputChange}
-                  placeholder="Choose skills needed"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
+                         <select
+  id="skillsNeeded"
+  name="skillsNeeded"
+  value={formData.skillsNeeded}
+  onChange={handleInputChange}
+  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+  required
+>
+  <option value="">Select skills</option>
+  <option value="overall">Overall Skills</option>
+  <option value="plumbing">Plumbing</option>
+  <option value="electrical">Electrical</option>
+  <option value="mechanical">Mechanical</option>
+  <option value="landscaping">Landscaping</option>
+  <option value="waste-management">Waste Management</option>
+  <option value="construction">Construction</option>
+  <option value="carpentry">Carpentry</option>
+  <option value="painting">Painting</option>
+  <option value="roofing">Roofing</option>
+  <option value="welding">Welding</option>
+  <option value="hvac">HVAC (Heating, Ventilation & AC)</option>
+  <option value="masonry">Masonry</option>
+  <option value="demolition">Demolition</option>
+  <option value="cleaning">Cleaning</option>
+  <option value="pest-control">Pest Control</option>
+  <option value="traffic-control">Traffic Control</option>
+  <option value="surveying">Surveying</option>
+  <option value="equipment-operation">Heavy Equipment Operation</option>
+  <option value="safety-inspection">Safety Inspection</option>
+  <option value="first-aid">First Aid</option>
+  <option value="signage">Signage & Marking</option>
+  <option value="it-support">IT Support</option>
+  <option value="customer-service">Customer Service</option>
+  <option value="other">Other</option>
+</select>
                       </div>
                     </div>
 
