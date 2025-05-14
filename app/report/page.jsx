@@ -22,6 +22,13 @@ export default function ReportIssuePage() {
     email: "",
     phone: "",
     address: "",
+    country: "",
+    city: "",
+    province: "",
+    compensation: "",
+    estimateTime: "",
+    difficulty: "",
+    skillsNeeded: ""
   })
 
   useEffect(() => {
@@ -167,6 +174,13 @@ export default function ReportIssuePage() {
           email: user?.primaryEmailAddress?.emailAddress || "",
           phone: "",
           address: "",
+          country: "",
+          city: "",
+          province: "",
+          compensation: "",
+          estimateTime: "",
+          difficulty: "",
+          skillsNeeded: ""
         });
         setFiles([]);
         setLocation(null);
