@@ -5,15 +5,21 @@ import { supabase } from "@/lib/supabaseClient"
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import { use } from "react";
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useUser } from "@clerk/nextjs"
+import { toast } from "react-hot-toast"
 
 export default function IssueDetailsPage({ params }) {
   const unwrappedId = use(params)
   const paramsId = unwrappedId.id;
+  const { user } = useUser();
+  const router = useRouter();
   const [issue, setIssue] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     available: "",
@@ -140,10 +146,64 @@ export default function IssueDetailsPage({ params }) {
     }
   };
   const prevStep = () => setStep(prev => prev - 1);
-  const handleSubmit = () => {
-    // Aquí podrías hacer validaciones adicionales o enviar a Supabase
-    console.log("Form submitted:", formData);
-    setStep(5); // Mostrar pantalla final de feedback
+  const handleSubmit = async () => {
+    if (!user) {
+      toast.error("Please sign in to apply");
+      router.push("/sign-in");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      // Check if user has already applied
+      const { data: existingApplication } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('issue_id', paramsId)
+        .eq('applicant_id', user.id)
+        .single();
+
+      if (existingApplication) {
+        toast.error("You have already applied for this issue");
+        setIsModalOpen(false);
+        return;
+      }
+
+      // Submit application
+      const { error: submitError } = await supabase
+        .from('applications')
+        .insert({
+          // Issue details
+          issue_id: paramsId,
+          issue_title: issue.title,
+          issue_description: issue.description,
+          issue_user_id: issue.user_id,
+          
+          // Applicant details
+          applicant_id: user.id,
+          applicant_name: `${user.firstName} ${user.lastName}`,
+          applicant_email: user.emailAddresses[0].emailAddress,
+          applicant_image_url: user.imageUrl,
+          
+          // Application details
+          available: formData.available === 'yes',
+          has_experience: formData.hasExperience === 'yes',
+          tools_description: formData.tools,
+          status: 'pending'
+        });
+
+      if (submitError) throw submitError;
+
+      // Show success message
+      setStep(5);
+      toast.success("Application submitted successfully!");
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast.error("Failed to submit application. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   
 
@@ -247,7 +307,14 @@ export default function IssueDetailsPage({ params }) {
             </div>
 
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                if (!user) {
+                  toast.error("Please sign in to apply");
+                  router.push("/sign-in");
+                  return;
+                }
+                setIsModalOpen(true);
+              }}
               className={`w-full py-3 rounded-lg font-medium ${
                 issue.status === "funded"
                   ? "bg-emerald-600 text-white hover:bg-emerald-700"
@@ -429,9 +496,9 @@ export default function IssueDetailsPage({ params }) {
                       ? 'bg-emerald-700 text-white hover:bg-emerald-800'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                     type="button"
-                    disabled={!canProceed()}
+                    disabled={!canProceed() || submitting}
                   >
-                    Submit Application
+                    {submitting ? 'Submitting...' : 'Submit Application'}
                   </button>
                 )}
               </div>
