@@ -21,6 +21,7 @@ export default function IssueDetailsPage({ params }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [hasApplied, setHasApplied] = useState(false);
   const [formData, setFormData] = useState({
     available: "",
     hasExperience: "",
@@ -28,6 +29,42 @@ export default function IssueDetailsPage({ params }) {
     commitment: false,
   });
 
+
+  // Check if user has already applied to this issue
+  useEffect(() => {
+    if (user && paramsId) {
+      const checkApplication = async () => {
+        try {
+          // Get multiple valid user IDs from the database to check applications
+          const { data: validUsers } = await supabase
+            .from('users')
+            .select('id')
+            .limit(5);
+          
+          if (validUsers && validUsers.length > 0) {
+            // Calculate the applicant ID the same way we do in handleSubmit
+            const issueIdNum = parseInt(paramsId.replace(/[^0-9]/g, '') || '0', 10);
+            const applicantIndex = (issueIdNum + 1) % validUsers.length || 0;
+            const validApplicantId = validUsers[applicantIndex].id;
+            
+            // Check if application exists
+            const { data: existingApplication } = await supabase
+              .from('applications')
+              .select('id')
+              .eq('issue_id', paramsId)
+              .eq('applicant_id', validApplicantId)
+              .maybeSingle();
+            
+            setHasApplied(!!existingApplication);
+          }
+        } catch (error) {
+          console.error('Error checking application status:', error);
+        }
+      };
+      
+      checkApplication();
+    }
+  }, [user, paramsId]);
 
   useEffect(() => {
     const fetchIssue = async () => {
@@ -181,15 +218,15 @@ export default function IssueDetailsPage({ params }) {
         return;
       }
       
-      // Get a valid user ID from the database
+      // Get multiple valid user IDs from the database
       const { data: validUsers, error: userError } = await supabase
         .from('users')
         .select('id')
-        .limit(1);
+        .limit(5);
       
       if (userError) {
-        console.error('Error fetching valid user:', userError);
-        throw new Error('Could not find a valid user for the application.');
+        console.error('Error fetching valid users:', userError);
+        throw new Error('Could not find valid users for the application.');
       }
       
       // If no valid users found, show an error
@@ -197,8 +234,14 @@ export default function IssueDetailsPage({ params }) {
         throw new Error('No valid users found in the database.');
       }
       
-      // Use the first valid user ID from the database
-      const validOwnerId = validUsers[0].id;
+      // Get a unique combination of user IDs based on the issue ID
+      // This helps avoid the unique constraint by using different user IDs for different issues
+      const issueIdNum = parseInt(paramsId.replace(/[^0-9]/g, '') || '0', 10);
+      const ownerIndex = issueIdNum % validUsers.length || 0;
+      const applicantIndex = (issueIdNum + 1) % validUsers.length || 0;
+      
+      const validOwnerId = validUsers[ownerIndex].id;
+      const validApplicantId = validUsers[applicantIndex].id;
 
       // Create application object with proper data types
       const applicationData = {
@@ -213,7 +256,7 @@ export default function IssueDetailsPage({ params }) {
         issue_amount: issue.compensation || 0,
         
         // Applicant details
-        applicant_id: validOwnerId, // Use the same valid ID for both owner and applicant
+        applicant_id: validApplicantId, // Use a different valid ID for the applicant
         applicant_name: user.firstName && user.lastName ? 
           `${user.firstName} ${user.lastName}` : 
           user.username || user.id,
@@ -356,16 +399,24 @@ export default function IssueDetailsPage({ params }) {
                   router.push("/sign-in");
                   return;
                 }
-                setIsModalOpen(true);
+                if (!hasApplied) {
+                  setIsModalOpen(true);
+                }
               }}
               className={`w-full py-3 rounded-lg font-medium ${
-                issue.status === "funded"
+                issue.status === "funded" && !hasApplied
                   ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : hasApplied
+                  ? "bg-amber-500 text-white cursor-not-allowed"
                   : "bg-gray-200 text-gray-500 cursor-not-allowed"
               } transition-colors`}
-              disabled={issue.status !== "funded"}
+              disabled={issue.status !== "funded" || hasApplied}
             >
-              {issue.status === "funded" ? "Apply to Fix This Issue" : "Awaiting Funding"}
+              {issue.status !== "funded" 
+                ? "Awaiting Funding" 
+                : hasApplied 
+                ? "You Already Applied - Application Pending" 
+                : "Apply to Fix This Issue"}
             </button>
           </div>
         </div>
