@@ -276,7 +276,7 @@ export default function FixPage() {
                         )}
                       </button>
                       <Link
-                        href={`/issues/${issue.id}`}
+                        href={`/fix/${issue.id}`}
                         className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
                       >
                         <ArrowUpRight className="h-4 w-4" />

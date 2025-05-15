@@ -327,31 +327,31 @@ export default function ReportIssuePage() {
   required
 >
   <option value="">Select skills</option>
-  <option value="overall">Overall Skills</option>
-  <option value="plumbing">Plumbing</option>
-  <option value="electrical">Electrical</option>
-  <option value="mechanical">Mechanical</option>
-  <option value="landscaping">Landscaping</option>
-  <option value="waste-management">Waste Management</option>
-  <option value="construction">Construction</option>
-  <option value="carpentry">Carpentry</option>
-  <option value="painting">Painting</option>
-  <option value="roofing">Roofing</option>
-  <option value="welding">Welding</option>
-  <option value="hvac">HVAC (Heating, Ventilation & AC)</option>
-  <option value="masonry">Masonry</option>
-  <option value="demolition">Demolition</option>
-  <option value="cleaning">Cleaning</option>
-  <option value="pest-control">Pest Control</option>
-  <option value="traffic-control">Traffic Control</option>
-  <option value="surveying">Surveying</option>
-  <option value="equipment-operation">Heavy Equipment Operation</option>
-  <option value="safety-inspection">Safety Inspection</option>
-  <option value="first-aid">First Aid</option>
-  <option value="signage">Signage & Marking</option>
-  <option value="it-support">IT Support</option>
-  <option value="customer-service">Customer Service</option>
-  <option value="other">Other</option>
+  <option value="Overall">Overall Skills</option>
+  <option value="Plumbing">Plumbing</option>
+  <option value="Electrical">Electrical</option>
+  <option value="Mechanical">Mechanical</option>
+  <option value="Landscaping">Landscaping</option>
+  <option value="Waste-management">Waste Management</option>
+  <option value="Construction">Construction</option>
+  <option value="Carpentry">Carpentry</option>
+  <option value="Painting">Painting</option>
+  <option value="Roofing">Roofing</option>
+  <option value="Welding">Welding</option>
+  <option value="HVAC">HVAC (Heating, Ventilation & AC)</option>
+  <option value="Masonry">Masonry</option>
+  <option value="Demolition">Demolition</option>
+  <option value="Cleaning">Cleaning</option>
+  <option value="Pest-control">Pest Control</option>
+  <option value="Traffic-control">Traffic Control</option>
+  <option value="Surveying">Surveying</option>
+  <option value="Equipment-operation">Heavy Equipment Operation</option>
+  <option value="Safety-inspection">Safety Inspection</option>
+  <option value="First-aid">First Aid</option>
+  <option value="Signage">Signage & Marking</option>
+  <option value="IT-support">IT Support</option>
+  <option value="Customer-service">Customer Service</option>
+  <option value="Other">Other</option>
 </select>
                       </div>
                     </div>
