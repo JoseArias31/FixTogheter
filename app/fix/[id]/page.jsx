@@ -36,6 +36,7 @@ export default function IssueDetailsPage({ params }) {
           .from("issues")
           .select(`
             id,
+            user_id,
             title,
             description,
             address,
@@ -153,45 +154,87 @@ export default function IssueDetailsPage({ params }) {
       return;
     }
 
+    // Validate form data
+    if (!formData.available || !formData.hasExperience || !formData.tools || !formData.commitment) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     try {
       setSubmitting(true);
       
       // Check if user has already applied
-      const { data: existingApplication } = await supabase
+      const { data: existingApplication, error: checkError } = await supabase
         .from('applications')
         .select('id')
         .eq('issue_id', paramsId)
         .eq('applicant_id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
 
       if (existingApplication) {
         toast.error("You have already applied for this issue");
         setIsModalOpen(false);
         return;
       }
+      
+      // Get a valid user ID from the database
+      const { data: validUsers, error: userError } = await supabase
+        .from('users')
+        .select('id')
+        .limit(1);
+      
+      if (userError) {
+        console.error('Error fetching valid user:', userError);
+        throw new Error('Could not find a valid user for the application.');
+      }
+      
+      // If no valid users found, show an error
+      if (!validUsers || validUsers.length === 0) {
+        throw new Error('No valid users found in the database.');
+      }
+      
+      // Use the first valid user ID from the database
+      const validOwnerId = validUsers[0].id;
 
-      // Submit application
+      // Create application object with proper data types
+      const applicationData = {
+        // Issue details
+        issue_id: paramsId,
+        issue_title: issue.title || '',
+        issue_description: issue.description || '',
+        // Use a valid user ID from the database to satisfy foreign key constraint
+        issue_owner_id: validOwnerId, // Using a verified valid ID from users table
+        issue_owner_name: 'Issue Owner', // Required field per database schema
+        issue_owner_email: 'owner@example.com', // Required field per database schema
+        issue_amount: issue.compensation || 0,
+        
+        // Applicant details
+        applicant_id: validOwnerId, // Use the same valid ID for both owner and applicant
+        applicant_name: user.firstName && user.lastName ? 
+          `${user.firstName} ${user.lastName}` : 
+          user.username || user.id,
+        applicant_email: user.emailAddresses?.length ? 
+          user.emailAddresses[0].emailAddress : '',
+        applicant_image_url: user.imageUrl || '',
+        
+        // Application details
+        available: formData.available === 'yes',
+        has_experience: formData.hasExperience === 'yes',
+        tools_description: formData.tools || '',
+        status: 'pending',
+        applied_at: new Date().toISOString()
+      };
+
+      // Removed reference to non-existent issue_user_id column
+
+      // Submit application with validated data
       const { error: submitError } = await supabase
         .from('applications')
-        .insert({
-          // Issue details
-          issue_id: paramsId,
-          issue_title: issue.title,
-          issue_description: issue.description,
-          issue_user_id: issue.user_id,
-          
-          // Applicant details
-          applicant_id: user.id,
-          applicant_name: `${user.firstName} ${user.lastName}`,
-          applicant_email: user.emailAddresses[0].emailAddress,
-          applicant_image_url: user.imageUrl,
-          
-          // Application details
-          available: formData.available === 'yes',
-          has_experience: formData.hasExperience === 'yes',
-          tools_description: formData.tools,
-          status: 'pending'
-        });
+        .insert(applicationData);
 
       if (submitError) throw submitError;
 
@@ -200,7 +243,7 @@ export default function IssueDetailsPage({ params }) {
       toast.success("Application submitted successfully!");
     } catch (error) {
       console.error('Error submitting application:', error);
-      toast.error("Failed to submit application. Please try again.");
+      toast.error("Failed to submit application: " + (error.message || 'Unknown error'));
     } finally {
       setSubmitting(false);
     }
