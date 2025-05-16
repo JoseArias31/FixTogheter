@@ -1,60 +1,61 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Search, DollarSign, Filter, ArrowUpRight } from "lucide-react"
+import {supabase} from "@/lib/supabaseClient"
 
 export default function DonatePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState("all")
+  const [issues, setIssues] = useState([])
 
-  // Mock data for issues
-  const issues = [
-    {
-      id: 1,
-      title: "Broken Playground Equipment at Central Park",
-      category: "parks",
-      location: "Central Park, Main St",
-      description: "The slide and swing set are damaged and unsafe for children.",
-      amountNeeded: 1200,
-      amountRaised: 450,
-      daysLeft: 14,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-    {
-      id: 2,
-      title: "Pothole on Elm Street",
-      category: "roads",
-      location: "Elm St & 5th Ave",
-      description: "Large pothole causing damage to vehicles and creating a hazard.",
-      amountNeeded: 800,
-      amountRaised: 650,
-      daysLeft: 7,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-    {
-      id: 3,
-      title: "Graffiti on Community Center",
-      category: "graffiti",
-      location: "Downtown Community Center",
-      description: "Extensive graffiti on the north wall of the community center.",
-      amountNeeded: 500,
-      amountRaised: 125,
-      daysLeft: 21,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-    {
-      id: 4,
-      title: "Broken Street Light on Oak Avenue",
-      category: "lighting",
-      location: "Oak Ave & Pine St",
-      description: "Street light has been out for weeks, creating safety concerns at night.",
-      amountNeeded: 350,
-      amountRaised: 200,
-      daysLeft: 10,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-  ]
+  useEffect(() => {
+    const fetchIssues = async () => {
+      const { data, error } = await supabase
+        .from("issues")
+        .select(`
+          id,
+          title,
+          description,
+          address,
+          organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
+          image_urls
+        `)
+
+      if (error) {
+        console.error("Error fetching issues:", error)
+        return
+      }
+
+      const formattedIssues = data.map(issue => ({
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        location: issue.address || "",
+        country: issue.country || "",
+        city: issue.city || "",
+        province: issue.province || "",
+        organization: issue.organization || "",
+        skills: issue.skillsNeeded || "Overall Skills",
+        estimatedTime: issue.estimateTime || "1-2 hours",
+        difficulty: issue.difficulty || "medium",
+        status: "funded",
+        compensation: issue.compensation || 0,
+        // Use the first image from image_urls or fallback to placeholder
+        images: issue.image_urls?.length ? [issue.image_urls[0]] : ["/placeholder.svg?height=200&width=300"],
+        // Keep the funding progress data as is
+        amountNeeded: 1200,
+        amountRaised: 450,
+        daysLeft: 14,
+        category: "parks" // Default category for filtering
+      }))
+
+      setIssues(formattedIssues)
+    }
+
+    fetchIssues()
+  }, [])
 
   // Filter issues based on search term and category filter
   const filteredIssues = issues.filter((issue) => {
@@ -134,12 +135,40 @@ export default function DonatePage() {
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="text-xl font-semibold">{issue.title}</h3>
-                      <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full capitalize">
-                        {issue.category}
+                      <span className={`text-xs px-2 py-1 rounded-full capitalize ${
+                          issue.status === "funded" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {issue.status === "funded" ? "Funded" : "Pending Funding"}
                       </span>
+                    </div>
+                    <div className="flex flex-row items-center gap-2">
+                      <p className="text-gray-500 text-sm mb-3">{issue.country},</p>
+                      <p className="text-gray-500 text-sm mb-3">{issue.city},</p>
+                      <p className="text-gray-500 text-sm mb-3">{issue.province}</p>
                     </div>
                     <p className="text-gray-500 text-sm mb-3">{issue.location}</p>
                     <p className="text-gray-700 mb-4">{issue.description}</p>
+                    
+                    {/* Details */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-gray-50 p-2 rounded">
+                        <p className="text-xs text-gray-500">Compensation</p>
+                        <p className="font-medium">${issue.compensation}</p>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded">
+                        <p className="text-xs text-gray-500">Estimated Time</p>
+                        <p className="font-medium">{issue.estimatedTime}</p>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded">
+                        <p className="text-xs text-gray-500">Difficulty</p>
+                        <p className="font-medium capitalize">{issue.difficulty}</p>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded">
+                        <p className="text-xs text-gray-500">Skills Needed</p>
+                        <p className="font-medium capitalize">{issue.skills}</p>
+                      </div>
+                    </div>
 
                     {/* Funding Progress */}
                     <div className="mb-4">
