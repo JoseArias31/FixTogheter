@@ -132,7 +132,7 @@ export default function AboutPage() {
             <div className="bg-white p-6 rounded-lg shadow-sm text-center">
               <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
                 <img 
-                  src="/Profile Picture.jpg" 
+                  src="/Profile Picture2.jpg" 
                   alt="Team Member" 
                   className="w-full h-full object-cover"
                 />

@@ -35,11 +35,9 @@ export default function NavBar() {
               <Link href="/report" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
                 Report Issue
               </Link>
-              <Link href="/donate" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
-                Donate
-              </Link>
+            
               <Link href="/fix" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
-                Fix Issues
+                Fix-Support
               </Link>
               <Link href="/about" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
                 About

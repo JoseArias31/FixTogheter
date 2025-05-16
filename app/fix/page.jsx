@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Search, Filter, PenToolIcon as Tool, Clock, ArrowUpRight } from "lucide-react"
+import { Search, Filter, PenToolIcon as Tool, Clock, ArrowUpRight, DollarSign } from "lucide-react"
 import {supabase} from "@/lib/supabaseClient"
 
 export default function FixPage() {
@@ -44,7 +44,7 @@ export default function FixPage() {
         skills: issue.skillsNeeded || "Overall Skills",
         estimatedTime: issue.estimateTime || "1-2 hours",
         difficulty: issue.difficulty || "medium",
-        status: "funded",
+        status: "funded", // Default status for new issues
         compensation: issue.compensation || 0,
         // Use the first image from image_urls or fallback to placeholder
         images: issue.image_urls?.length ? [issue.image_urls[0]] : ["/placeholder.svg?height=200&width=300"],
@@ -57,61 +57,6 @@ export default function FixPage() {
     fetchIssues()
   }, [])
 
-  // Real issues loaded from Supabase with some hardcoded values
-  const fetchedIssues = [
-    {
-      id: 1,
-      title: "Broken Playground Equipment at Central Park",
-      category: "parks",
-      skills: ["carpentry", "welding"],
-      location: "Central Park, Main St",
-      description: "The slide and swing set are damaged and unsafe for children.",
-      estimatedTime: "4-6 hours",
-      difficulty: "medium",
-      status: "funded",
-      compensation: 250,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-    {
-      id: 2,
-      title: "Pothole on Elm Street",
-      category: "roads",
-      skills: ["construction"],
-      location: "Elm St & 5th Ave",
-      description: "Large pothole causing damage to vehicles and creating a hazard.",
-      estimatedTime: "2-3 hours",
-      difficulty: "medium",
-      status: "funded",
-      compensation: 150,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-    {
-      id: 3,
-      title: "Graffiti on Community Center",
-      category: "graffiti",
-      skills: ["painting"],
-      location: "Downtown Community Center",
-      description: "Extensive graffiti on the north wall of the community center.",
-      estimatedTime: "3-4 hours",
-      difficulty: "easy",
-      status: "pending",
-      compensation: 100,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-    {
-      id: 4,
-      title: "Broken Street Light on Oak Avenue",
-      category: "lighting",
-      skills: ["electrical"],
-      location: "Oak Ave & Pine St",
-      description: "Street light has been out for weeks, creating safety concerns at night.",
-      estimatedTime: "1-2 hours",
-      difficulty: "hard",
-      status: "funded",
-      compensation: 120,
-      images: ["/placeholder.svg?height=200&width=300"],
-    },
-  ]
 
   // Filter issues based on search term, category filter, and skill filter
   const filteredIssues = issues?.filter((issue) => {
@@ -127,7 +72,7 @@ export default function FixPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50  mt-16">
+    <div className=" min-h-screen bg-gray-50  mt-16">
      
 
       {/* Main Content */}
@@ -254,35 +199,59 @@ export default function FixPage() {
                       </div>
                     </div>
 
-                    <div className="flex space-x-3">
-                      <button
-                        className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center ${
-                          issue.status === "funded"
-                            ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                            : "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        } transition-colors`}
-                        disabled={issue.status !== "funded"}
-                      >
-                        {issue.status === "funded" ? (
-                          <>
-                            <Tool className="h-4 w-4 mr-1" />
-                            Apply to Fix
-                          </>
-                        ) : (
-                          <>
-                            <Clock className="h-4 w-4 mr-1" />
-                            Awaiting Funding
-                          </>
-                        )}
-                      </button>
-                      <Link
-                        href={`/fix/${issue.id}`}
-                        className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
-                      >
-                        <ArrowUpRight className="h-4 w-4" />
-                      </Link>
+                   <div className="flex flex-col md:flex-row gap-3 mb-4 justify-between items-stretch md:items-center">
+  <button className="w-full md:flex-1 p-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center">
+   
+    <DollarSign className="h-4 w-4 mr-1" />
+   Support
+  </button>
+
+  <button
+    className={`w-full md:flex-1 rounded-lg font-medium flex items-center justify-center transition-colors ${
+      issue.status === "funded"
+        ? "p-2 bg-emerald-600 text-white hover:bg-emerald-700"
+        : "p-2 bg-gray-200 text-gray-500 cursor-not-allowed"
+    }`}
+    disabled={issue.status !== "funded"}
+  >
+    {issue.status === "funded" ? (
+      <>
+        <Tool className="h-4 w-4 mr-1" />
+        Apply to Fix
+      </>
+    ) : (
+      <>
+        <Clock className="h-4 w-4 mr-1" />
+        Awaiting Funding
+      </>
+    )}
+  </button>
+
+  <Link
+    href={`/fix/${issue.id}`}
+    className="w-full md:w-auto p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
+  >
+    <ArrowUpRight className="h-4 w-4" />
+  </Link>
+</div>
+      {/* Funding Progress */}
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="font-medium">${issue.amountRaised} raised</span>
+                        <span className="text-gray-500">of ${issue.amountNeeded} goal</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="bg-emerald-600 h-2.5 rounded-full"
+                          style={{ width: `${(issue.amountRaised / issue.amountNeeded) * 100}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-right text-xs text-gray-500 mt-1">{issue.daysLeft} days left</div>
                     </div>
+
+                    
                   </div>
+                  
                 </div>
               ))
             ) : (

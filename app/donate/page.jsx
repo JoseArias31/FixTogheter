@@ -186,9 +186,33 @@ export default function DonatePage() {
                     </div>
 
                     <div className="flex space-x-3">
-                      <button className="flex-1 bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center">
-                        <DollarSign className="h-4 w-4 mr-1" />
-                        Donate Now
+                      <button
+                        className={`w-full md:flex-1 rounded-lg font-medium flex items-center justify-center transition-colors ${
+                          issue.status === "funded"
+                            ? "p-2 bg-emerald-600 text-white hover:bg-emerald-700"
+                            : "p-2 bg-blue-500 text-white hover:bg-blue-600"
+                        }`}
+                        onClick={() => {
+                          if (issue.status === "funded") {
+                            // Handle donation flow
+                            console.log("Processing donation for", issue.id);
+                          } else {
+                            // Handle support action
+                            console.log("Processing support for", issue.id);
+                          }
+                        }}
+                      >
+                        {issue.status === "funded" ? (
+                          <>
+                            <DollarSign className="h-4 w-4 mr-1" />
+                            Donate now
+                          </>
+                        ) : (
+                          <>
+                            <DollarSign className="h-4 w-4 mr-1" />
+                            Support
+                          </>
+                        )}
                       </button>
                       <Link
                         href={`/issues/${issue.id}`}
