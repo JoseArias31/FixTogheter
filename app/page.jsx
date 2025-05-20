@@ -33,7 +33,7 @@ export default function Home() {
               </SignedOut>
               
               <Link
-                href="/browse"
+                href="/fix"
                 className="bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-800 transition-colors flex items-center justify-center"
               >
                 Browse Issues
@@ -116,20 +116,30 @@ export default function Home() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join our community of problem solvers and help make your neighborhood a better place.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/signup"
-              className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-            >
-              Sign Up Now
-            </Link>
-            <Link
-              href="/learn-more"
-              className="bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-800 transition-colors"
-            >
-              Learn More
-            </Link>
-          </div>
+         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <SignedIn>
+                <Link
+                  href="/report"
+                  className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center"
+                >
+                  Report an Issue <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center">
+                    Sign up now <ArrowRight className="ml-2 h-5 w-5" />
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              
+              <Link
+                href="/fix"
+                className="bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-800 transition-colors flex items-center justify-center"
+              >
+                Support Communites
+              </Link>
+            </div>
         </div>
       </section>
 
@@ -155,7 +165,7 @@ export default function Home() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/donate" className="text-gray-300 hover:text-white">
+                  <Link href="/fix" className="text-gray-300 hover:text-white">
                     Donate
                   </Link>
                 </li>

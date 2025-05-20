@@ -192,7 +192,7 @@ export default function AboutPage() {
               Report an Issue <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link
-              href="/donate"
+              href="/fix"
               className="bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-800 transition-colors"
             >
               Donate to a Cause
