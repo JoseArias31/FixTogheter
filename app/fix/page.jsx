@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Search, Filter, PenToolIcon as Tool, Clock, ArrowUpRight, DollarSign } from "lucide-react"
+import { Search, Filter, PenToolIcon as Tool, Clock, ArrowUpRight, DollarSign, X } from "lucide-react"
 import {supabase} from "@/lib/supabaseClient"
 
 export default function FixPage() {
@@ -10,6 +10,10 @@ export default function FixPage() {
   const [filter, setFilter] = useState("all")
   const [skillFilter, setSkillFilter] = useState("all")
   const [issues, setIssues] = useState([])
+  const [isDonateModalOpen, setIsDonateModalOpen] = useState(false)
+  const [donationAmount, setDonationAmount] = useState(10)
+  const [customAmount, setCustomAmount] = useState('')
+  const [selectedIssueId, setSelectedIssueId] = useState(null)
 
   useEffect(() => {
     const fetchIssues = async () => {
@@ -204,17 +208,16 @@ export default function FixPage() {
                     </div>
 
                    <div className="flex flex-col md:flex-row gap-3 mb-4 justify-between items-stretch md:items-center">
-  <form action="/api/report/checkout_sessions" method="POST" className="w-full md:flex-1">
-    <input type="hidden" name="issueId" value={issue.id} />
-    <input type="hidden" name="amount" value="10" /> {/* Default donation amount */}
-    <button 
-      type="submit"
-      className="w-full p-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center"
-    >
-      <DollarSign className="h-4 w-4 mr-1" />
-      Support
-    </button>
-  </form>
+  <button 
+    onClick={() => {
+      setSelectedIssueId(issue.id);
+      setIsDonateModalOpen(true);
+    }}
+    className="w-full md:flex-1 p-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center"
+  >
+    <DollarSign className="h-4 w-4 mr-1" />
+    Support
+  </button>
 
 
   <button
@@ -283,6 +286,95 @@ export default function FixPage() {
           </div>
         </div>
       </main>
+      
+      {/* Donation Modal */}
+      {isDonateModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md space-y-4 relative">
+            <button 
+              onClick={() => setIsDonateModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            
+            <h2 className="text-xl font-semibold text-gray-800">Support This Issue</h2>
+            <p className="text-gray-600">Choose an amount to donate:</p>
+            
+            <div className="grid grid-cols-3 gap-2">
+              {[5, 10, 25].map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => {
+                    setDonationAmount(amount);
+                    setCustomAmount('');
+                  }}
+                  className={`p-3 rounded-lg border ${donationAmount === amount && !customAmount ? 'bg-emerald-50 border-emerald-500' : 'border-gray-300 hover:border-emerald-500'}`}
+                >
+                  ${amount}
+                </button>
+              ))}
+              {[50, 100, 200].map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => {
+                    setDonationAmount(amount);
+                    setCustomAmount('');
+                  }}
+                  className={`p-3 rounded-lg border ${donationAmount === amount && !customAmount ? 'bg-emerald-50 border-emerald-500' : 'border-gray-300 hover:border-emerald-500'}`}
+                >
+                  ${amount}
+                </button>
+              ))}
+            </div>
+            
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Custom Amount</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500">$</span>
+                </div>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Enter amount"
+                  value={customAmount}
+                  onChange={(e) => {
+                    setCustomAmount(e.target.value);
+                    if (e.target.value) {
+                      setDonationAmount(parseFloat(e.target.value));
+                    } else {
+                      setDonationAmount(10); // Default
+                    }
+                  }}
+                  className="pl-8 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+            </div>
+            
+            <form action="/api/report/checkout_sessions" method="POST" className="mt-6">
+              <input type="hidden" name="issueId" value={selectedIssueId} />
+              <input type="hidden" name="amount" value={donationAmount} />
+              
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsDonateModalOpen(false)}
+                  className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  Donate ${customAmount || donationAmount}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
