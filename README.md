@@ -13,11 +13,12 @@ Visita la aplicación desplegada en Vercel:
 > 🌐 [https://fix-togheter.vercel.app/](https://fix-togheter.vercel.app/)
 
 ## 📸 Capturas de pantalla & GIFs
-<img width="1723" alt="Screenshot 2025-05-20 at 4 53 54 PM" src="https://github.com/user-attachments/assets/828664c9-4056-4b81-8c6d-d016f6e68f3e" />
+<img width="800" alt="Screenshot 2025-05-20 at 4 53 54 PM" src="https://github.com/user-attachments/assets/828664c9-4056-4b81-8c6d-d016f6e68f3e" />
 
-<img width="1723" alt="Screenshot 2025-05-20 at 4 56 11 PM" src="https://github.com/user-attachments/assets/4dcdc2a3-1ac0-4dea-9f83-cdb30700db1d" />
+<img width="800" alt="Screenshot 2025-05-20 at 4 56 11 PM" src="https://github.com/user-attachments/assets/4dcdc2a3-1ac0-4dea-9f83-cdb30700db1d" />
 
-<img width="1723" alt="Screenshot 2025-05-20 at 4 53 54 PM" src="https://github.com/user-attachments/assets/075ac484-a937-43d8-bb81-a8d6d6430ea4" />
+<img width="800" alt="Screenshot 2025-05-20 at 4 55 34 PM" src="https://github.com/user-attachments/assets/a5c330ee-6fb4-4fc4-84b7-3f4b57fe089e" />
+
 
 
 ## 🛡️ Integración con Clerk y Modales
