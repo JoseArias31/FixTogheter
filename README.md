@@ -47,6 +47,7 @@ He seguido la documentación oficial de Clerk para una integración limpia y sen
   * Clerk (autenticación y gestión de sesiones)
   * PostgreSQL (Supabase)
   * Stripe (pagos y donations)
+  * react-floating-whatsapp (widget de chat)
 * **Despliegue:** Vercel
 
 ## 💳 Donaciones y Pagos con Stripe (modales)
