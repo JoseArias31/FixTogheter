@@ -85,12 +85,12 @@ export async function POST(req) {
 
     const {
       category, phone, organization, title, description, priority,
-      location, address, files, images, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
+      location, address, files, images, country, city, province, compensation,estimateTime, difficulty, skillsNeeded, amount_needed, amount_raised, min_donation, max_donation, donation_active, currency, daysLeft,
     } = await req.json();
 
     console.log('Received form data:', {
       category, title, description, priority,
-      location, address, phone, organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
+      location, address, phone, organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,amount_needed, amount_raised, min_donation, max_donation, donation_active, currency, daysLeft,
       filesCount: files?.length,
       imagesCount: images?.length
     });
@@ -184,7 +184,7 @@ export async function POST(req) {
       description,
       phone,
       organization,
-      priority, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
+      priority, country, city, province, compensation,estimateTime, difficulty, skillsNeeded, amount_needed, amount_raised, min_donation, max_donation, donation_active, currency, daysLeft,
       hasLocation: !!location,
       hasAddress: !!address,
       filesCount: files?.length,
@@ -201,7 +201,7 @@ export async function POST(req) {
         description,
         phone,
         organization,
-        priority, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
+        priority, country, city, province, compensation,estimateTime, difficulty, skillsNeeded, amount_needed, amount_raised, min_donation, max_donation, donation_active, currency, daysLeft,
         latitude: location?.latitude ?? null,
         longitude: location?.longitude ?? null,
         address: address ?? null,

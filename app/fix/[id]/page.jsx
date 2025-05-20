@@ -85,7 +85,14 @@ export default function IssueDetailsPage({ params }) {
             estimateTime,
             difficulty,
             skillsNeeded,
-            image_urls
+            image_urls,
+            amount_needed,
+            amount_raised,
+            min_donation,
+            max_donation,
+            donation_active,
+            daysLeft,
+            currency
           `)
           .eq("id", paramsId)
           .single()
@@ -98,8 +105,13 @@ export default function IssueDetailsPage({ params }) {
             location: data.address || "",
             skills: data.skillsNeeded || "Overall Skills",
             estimatedTime: data.estimateTime || "1-2 hours",
-            status: "funded", // Default status
+            status: data.donation_active ? "funded" : "pending",
             image_urls: data.image_urls?.length ? data.image_urls : ["/placeholder.svg?height=200&width=300"],
+            amountNeeded: data.amount_needed || 0,
+            amountRaised: data.amount_raised || 0,
+            minDonation: data.min_donation || 5,
+            maxDonation: data.max_donation || 1000,
+            currency: data.currency || "USD"
           })
         }
       } catch (err) {

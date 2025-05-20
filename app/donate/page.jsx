@@ -19,8 +19,9 @@ export default function DonatePage() {
           title,
           description,
           address,
-          organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
-          image_urls
+          organization, country, city, province, compensation, estimateTime, difficulty, skillsNeeded,
+          image_urls,
+          amount_needed, amount_raised, min_donation, max_donation, donation_active, currency
         `)
 
       if (error) {
@@ -40,14 +41,17 @@ export default function DonatePage() {
         skills: issue.skillsNeeded || "Overall Skills",
         estimatedTime: issue.estimateTime || "1-2 hours",
         difficulty: issue.difficulty || "medium",
-        status: "funded",
+        status: issue.donation_active ? "funded" : "pending",
         compensation: issue.compensation || 0,
         // Use the first image from image_urls or fallback to placeholder
         images: issue.image_urls?.length ? [issue.image_urls[0]] : ["/placeholder.svg?height=200&width=300"],
-        // Keep the funding progress data as is
-        amountNeeded: 1200,
-        amountRaised: 450,
-        daysLeft: 14,
+        // Use the actual donation data from the database
+        amountNeeded: issue.amount_needed || 1200,
+        amountRaised: issue.amount_raised || 0,
+        minDonation: issue.min_donation || 5,
+        maxDonation: issue.max_donation || 1000,
+        currency: issue.currency || "USD",
+        daysLeft: 14, // This could be calculated based on a deadline field if you add one
         category: "parks" // Default category for filtering
       }))
 

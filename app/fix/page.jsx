@@ -20,9 +20,8 @@ export default function FixPage() {
           title,
           description,
           address,
-          organization, country, city, province, compensation,estimateTime, difficulty, skillsNeeded,
-
-          image_urls
+          organization, country, city, province, compensation, estimateTime, difficulty, skillsNeeded,
+          image_urls, amount_needed, amount_raised, min_donation, max_donation, donation_active, currency, daysLeft
         `)
 
       if (error) {
@@ -40,15 +39,20 @@ export default function FixPage() {
         province: issue.province || "",
         organization: issue.organization || "",
         // name: issue.users?.name || "",
-        // Keep hardcoded values as requested
         skills: issue.skillsNeeded || "Overall Skills",
         estimatedTime: issue.estimateTime || "1-2 hours",
         difficulty: issue.difficulty || "medium",
-        status: "funded", // Default status for new issues
+        status: issue.donation_active ? "funded" : "pending", // Set status based on donation_active
         compensation: issue.compensation || 0,
         // Use the first image from image_urls or fallback to placeholder
         images: issue.image_urls?.length ? [issue.image_urls[0]] : ["/placeholder.svg?height=200&width=300"],
-        category: "parks" // Default category for filtering
+        category: "parks", // Default category for filtering
+        amountNeeded: issue.amount_needed || 0,
+        amountRaised: issue.amount_raised || 0,
+        minDonation: issue.min_donation || 5,
+        maxDonation: issue.max_donation || 1000,
+        currency: issue.currency || "USD",
+        daysLeft: issue.daysLeft // This could be calculated based on a deadline field if you add one
       }))
 
       setIssues(formattedIssues)
