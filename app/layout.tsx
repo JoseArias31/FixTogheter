@@ -1,5 +1,6 @@
 import { type Metadata } from 'next'
 import NavBar from '../components/navBar'
+import Footer from '../components/footer'
 import {
   ClerkProvider
 
@@ -33,6 +34,7 @@ export default function RootLayout({
         <ClerkProvider>
           <NavBar />
           {children}
+          <Footer />
         </ClerkProvider>
       </body>
     </html>
