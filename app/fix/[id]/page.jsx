@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight, DollarSign } from "lucide-react"
 import { use } from "react";
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -111,7 +111,8 @@ export default function IssueDetailsPage({ params }) {
             amountRaised: data.amount_raised || 0,
             minDonation: data.min_donation || 5,
             maxDonation: data.max_donation || 1000,
-            currency: data.currency || "USD"
+            dataysLeft: data.daysLeft || 5,
+            currency: data.currency || "CAD"
           })
         }
       } catch (err) {
@@ -403,33 +404,54 @@ export default function IssueDetailsPage({ params }) {
                 <p className="text-lg font-medium">{issue.skills}</p>
               </div>
             </div>
-
-            <button
-              onClick={() => {
-                if (!user) {
-                  toast.error("Please sign in to apply");
-                  router.push("/sign-in");
-                  return;
-                }
-                if (!hasApplied) {
-                  setIsModalOpen(true);
-                }
-              }}
-              className={`w-full py-3 rounded-lg font-medium ${
-                issue.status === "funded" && !hasApplied
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                  : hasApplied
-                  ? "bg-amber-500 text-white cursor-not-allowed"
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed"
-              } transition-colors`}
-              disabled={issue.status !== "funded" || hasApplied}
-            >
-              {issue.status !== "funded" 
-                ? "Awaiting Funding" 
-                : hasApplied 
-                ? "You Already Applied - Application Pending" 
-                : "Apply to Fix This Issue"}
-            </button>
+            <div className="flex flex-col md:flex-row gap-3 mb-4 justify-between items-stretch">
+              <button 
+                className="w-full md:w-1/2 p-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center"
+              >
+                <DollarSign className="h-4 w-4 mr-1" />
+                Support
+              </button>
+              <button
+                onClick={() => {
+                  if (!user) {
+                    toast.error("Please sign in to apply");
+                    router.push("/sign-in");
+                    return;
+                  }
+                  if (!hasApplied) {
+                    setIsModalOpen(true);
+                  }
+                }}
+                className={`w-full md:w-1/2 p-3 rounded-lg font-medium flex items-center justify-center ${
+                  issue.status === "funded" && !hasApplied
+                    ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                    : hasApplied
+                    ? "bg-amber-500 text-white cursor-not-allowed"
+                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                } transition-colors`}
+                disabled={issue.status !== "funded" || hasApplied}
+              >
+                {issue.status !== "funded" 
+                  ? "Awaiting Funding" 
+                  : hasApplied 
+                  ? "You Already Applied" 
+                  : "Apply to Fix This Issue"}
+              </button>
+            </div>
+              {/* Funding Progress */}
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="font-medium">${issue.amountRaised} raised</span>
+                        <span className="text-gray-500">of ${issue.amountNeeded} goal</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="bg-emerald-600 h-2.5 rounded-full"
+                          style={{ width: `${(issue.amountRaised / issue.amountNeeded) * 100}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-right text-xs text-gray-500 mt-1">{issue.daysLeft} days left</div>
+                    </div>
           </div>
         </div>
       </div>
