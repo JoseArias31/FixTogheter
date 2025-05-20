@@ -204,11 +204,18 @@ export default function FixPage() {
                     </div>
 
                    <div className="flex flex-col md:flex-row gap-3 mb-4 justify-between items-stretch md:items-center">
-  <button className="w-full md:flex-1 p-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center">
-   
-    <DollarSign className="h-4 w-4 mr-1" />
-   Support
-  </button>
+  <form action="/api/report/checkout_sessions" method="POST" className="w-full md:flex-1">
+    <input type="hidden" name="issueId" value={issue.id} />
+    <input type="hidden" name="amount" value="10" /> {/* Default donation amount */}
+    <button 
+      type="submit"
+      className="w-full p-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center"
+    >
+      <DollarSign className="h-4 w-4 mr-1" />
+      Support
+    </button>
+  </form>
+
 
   <button
     className={`w-full md:flex-1 rounded-lg font-medium flex items-center justify-center transition-colors ${

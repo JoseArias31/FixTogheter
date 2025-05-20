@@ -405,12 +405,17 @@ export default function IssueDetailsPage({ params }) {
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-3 mb-4 justify-between items-stretch">
-              <button 
-                className="w-full md:w-1/2 p-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center"
-              >
-                <DollarSign className="h-4 w-4 mr-1" />
-                Support
-              </button>
+              <form action="/api/report/checkout_sessions" method="POST" className="w-full md:w-1/2">
+                <input type="hidden" name="issueId" value={issue.id} />
+                <input type="hidden" name="amount" value="10" /> {/* Default donation amount */}
+                <button 
+                  type="submit"
+                  className="w-full p-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center"
+                >
+                  <DollarSign className="h-4 w-4 mr-1" />
+                  Support
+                </button>
+              </form>
               <button
                 onClick={() => {
                   if (!user) {
