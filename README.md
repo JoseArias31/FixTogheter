@@ -14,7 +14,9 @@ Visita la aplicación desplegada en Vercel:
 
 ## 📸 Capturas de pantalla & GIFs
 
-*(Agrega aquí capturas o GIFs de tu app para mostrar la interfaz y el flujo de usuario.)*
+![Uploading Screenshot 2025-05-20 at 4.55.34 PM.png…]()
+<img width="1723" alt="Screenshot 2025-05-20 at 4 56 11 PM" src="https://github.com/user-attachments/assets/b8e33045-3b8f-4b2a-82db-b9a97130812c" />
+
 
 ## 🛡️ Integración con Clerk y Modales
 
