@@ -4,7 +4,7 @@
 
 ## 📖 Descripción del proyecto
 
-**Fix Together** se basa en una idea sencilla pero potente: cuando la comunidad se une, resolvemos problemas locales de forma más rápida y eficaz que con soluciones tradicionales. A través de la colaboración, cualquier miembro puede reportar incidencias o donar para apoyar iniciativas locales.
+**Fix Together** se basa en una idea sencilla pero potente: unir a la comunidad para resolver problemas locales de manera rápida y colaborativa. Aquí, cualquier miembro puede reportar incidencias y apoyar con donaciones para impulsar soluciones efectivas.
 
 ## 🔗 Enlace a la demo
 
@@ -16,16 +16,17 @@ Visita la aplicación desplegada en Vercel:
 
 *(Agrega aquí capturas o GIFs de tu app para mostrar la interfaz y el flujo de usuario.)*
 
-## 🛡️ Integración con Clerk
+## 🛡️ Integración con Clerk y Modales
 
-Este proyecto utiliza **Clerk** para la autenticación y gestión de sesiones de usuario, gracias a su patrocinio en la Hackathon Midudev 2025. He integrado Clerk siguiendo su documentación oficial, ubicando el componente de **Sign In / Sign Up** en la esquina superior derecha de la aplicación.
+Este proyecto utiliza **Clerk** para la autenticación y gestión de sesiones de usuario, patrocinado por la Hackathon Midudev 2025.
 
-> **Importante:** Para poder:
->
-> * ✨ Realizar donaciones
-> * 🐛 Reportar incidencias en la comunidad
->
-> los usuarios deben iniciar sesión con Clerk. Sin autenticación, la interacción queda limitada.
+* La autenticación se realiza mediante **modales** emergentes (modals) para **Sign In / Sign Up**, ubicados en la esquina superior derecha.
+* Sin iniciar sesión, no se pueden:
+
+  * ✨ Realizar donaciones
+  * 🐛 Reportar incidencias
+
+He seguido la documentación oficial de Clerk para una integración limpia y sencilla.
 
 ## 💻 Stack Tecnológico
 
@@ -43,16 +44,20 @@ Este proyecto utiliza **Clerk** para la autenticación y gestión de sesiones de
   * Stripe (pagos y donations)
 * **Despliegue:** Vercel
 
-## 💳 Pagos con Stripe
+## 💳 Donaciones y Pagos con Stripe (modales)
 
-La integración con Stripe está en modo sandbox:
+La integración con Stripe está en modo **sandbox** y también usa **modales** para mejorar la UX antes de confirmar un pago:
 
-1. Haz clic en "Checkout" para ir a la página de pago.
-2. Usa cualquiera de estas tarjetas de prueba:
+1. Haz clic en el botón **"\$ Support"** 🔘
+2. Se abre un modal donde puedes elegir el monto (mínimo **\$5 CAD**) y ver la vista previa.
+3. Confirma para abrir el modal de Stripe Checkout.
+4. Usa cualquiera de estas tarjetas de prueba:
 
    * **Pago exitoso:** `4242 4242 4242 4242`
    * **Requiere autenticación:** `4000 0025 0000 3155`
    * **Pago rechazado:** `4000 0000 0000 9995`
+
+* **Expiración/CVC:** La fecha de expiración debe ser posterior al día de hoy y se puede usar cualquier CVC de 3 dígitos
 
 ## ⚙️ Variables de entorno
 
@@ -70,14 +75,14 @@ STRIPE_SECRET_KEY=<TU_STRIPE_SECRET_KEY>
 
 ## 🚀 Funcionalidades
 
-* 🔐 Inicio de sesión y registro de usuarios con Clerk
-* 📝 Reporte de issues/incidencias de manera sencilla
-* 💰 Donaciones personalizables para apoyar causas locales
-* 📦 Almacenamiento de datos en Supabase (PostgreSQL) y de imágenes en Storage
+* 🔐 **Modales** de inicio de sesión y registro con Clerk
+* 📝 Reporte de issues/incidencias de manera sencilla (requiere login)
+* 💰 Donaciones personalizables (mín. \$5 CAD) mediante modal **\$ Support**
+* 📦 Almacenamiento de datos en Supabase (PostgreSQL) y de imágenes en Storage bulk
 * 🌐 Navegación responsiva y adaptada a dispositivos móviles
 * 🎨 Diseño intuitivo con Tailwind CSS
-* 📈 Gestión de pagos vía Stripe (sandbox)
-* 📸 Previsualización de imágenes en bulk storage
+* 📈 Gestión de pagos via Stripe (sandbox) con opciones de autenticación
+* 🖼️ Previsualización de imágenes en bulk storage
 
 ## 🧑 Autor
 
