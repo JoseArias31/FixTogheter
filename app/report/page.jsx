@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Camera, MapPin, AlertCircle } from "lucide-react"
+import { Camera, MapPin, AlertCircle, DollarSign, Clock, Calendar, CreditCard, Toggle } from "lucide-react"
 import Link from "next/link"
 import { useUser } from '@clerk/nextjs'
 import { uploadImage } from "@/lib/storage/cliente";
@@ -28,7 +28,15 @@ export default function ReportIssuePage() {
     compensation: "",
     estimateTime: "",
     difficulty: "",
-    skillsNeeded: ""
+    skillsNeeded: "",
+    // New donation-related fields
+    amount_needed: 20,
+    amount_raised: 0,
+    min_donation: 5,
+    max_donation: 20,
+    donation_active: true,
+    currency: "CAD",
+    daysLeft: 7
   })
 
   useEffect(() => {
@@ -180,7 +188,15 @@ export default function ReportIssuePage() {
           compensation: "",
           estimateTime: "",
           difficulty: "",
-          skillsNeeded: ""
+          skillsNeeded: "",
+          // Reset donation fields to defaults
+          amount_needed: 20,
+          amount_raised: 0,
+          min_donation: 5,
+          max_donation: 20,
+          donation_active: true,
+          currency: "CAD",
+          daysLeft: 7
         });
         setFiles([]);
         setLocation(null);
@@ -518,6 +534,189 @@ export default function ReportIssuePage() {
                 />
               </div>
              
+
+              {/* Donation Section */}
+              <div className="mb-8 mt-10 border border-emerald-100 rounded-lg p-6 bg-emerald-50">
+                <h3 className="text-lg font-semibold mb-4 flex items-center text-emerald-800">
+                  <DollarSign className="h-5 w-5 mr-2" />
+                  Funding Information
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Set up funding details for your issue. This will allow community members to contribute to resolving this issue.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* Amount Needed */}
+                  <div>
+                    <label htmlFor="amount_needed" className="block text-gray-700 font-medium mb-2">
+                      Amount Needed ($)
+                      <span className="text-xs text-gray-500 ml-1">(min $20)</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <DollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="amount_needed"
+                        name="amount_needed"
+                        min="20"
+                        value={formData.amount_needed}
+                        onChange={handleInputChange}
+                        className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">For larger amounts, admin will review and adjust if needed.</p>
+                  </div>
+                  
+                  {/* Currency */}
+                  <div>
+                    <label htmlFor="currency" className="block text-gray-700 font-medium mb-2">Currency</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <CreditCard className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <select
+                        id="currency"
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleInputChange}
+                        className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      >
+                        <option value="CAD">Canadian Dollar (CAD)</option>
+                        <option value="USD">US Dollar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">British Pound (GBP)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* Min Donation */}
+                  <div>
+                    <label htmlFor="min_donation" className="block text-gray-700 font-medium mb-2">
+                      Minimum Donation
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <DollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="min_donation"
+                        name="min_donation"
+                        min="1"
+                        value={formData.min_donation}
+                        onChange={handleInputChange}
+                        className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Max Donation */}
+                  <div>
+                    <label htmlFor="max_donation" className="block text-gray-700 font-medium mb-2">
+                      Maximum Donation
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <DollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="max_donation"
+                        name="max_donation"
+                        min={formData.min_donation}
+                        max={formData.amount_needed}
+                        value={formData.max_donation}
+                        onChange={handleInputChange}
+                        className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">For larger donations, donors should contact admin.</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* Days Left */}
+                  <div>
+                    <label htmlFor="daysLeft" className="block text-gray-700 font-medium mb-2">
+                      Funding Duration (Days)
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Calendar className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <select
+                        id="daysLeft"
+                        name="daysLeft"
+                        value={formData.daysLeft}
+                        onChange={handleInputChange}
+                        className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      >
+                        <option value="2">2 days</option>
+                        <option value="3">3 days</option>
+                        <option value="5">5 days</option>
+                        <option value="7">7 days</option>
+                        <option value="10">10 days</option>
+                        <option value="14">14 days</option>
+                        <option value="21">21 days</option>
+                        <option value="30">30 days</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  {/* Donation Active */}
+                  <div className="flex items-center mt-8">
+                    <label htmlFor="donation_active" className="flex items-center cursor-pointer">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          id="donation_active"
+                          name="donation_active"
+                          checked={formData.donation_active}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              donation_active: e.target.checked
+                            });
+                          }}
+                          className="sr-only"
+                        />
+                        <div className={`block w-14 h-8 rounded-full ${formData.donation_active ? 'bg-emerald-500' : 'bg-gray-300'} transition-colors`}></div>
+                        <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ${formData.donation_active ? 'translate-x-6' : ''}`}></div>
+                      </div>
+                      <div className="ml-3 text-gray-700 font-medium">
+                        Enable Donations
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                
+                {/* Funding Preview */}
+                {formData.donation_active && (
+                  <div className="mt-6 p-4 border border-emerald-200 rounded-lg bg-white">
+                    <h4 className="font-medium text-emerald-800 mb-2">Funding Preview</h4>
+                    <div className="mb-2">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="font-medium">$0 raised</span>
+                        <span className="text-gray-500">of ${formData.amount_needed} goal</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="bg-emerald-600 h-2.5 rounded-full"
+                          style={{ width: '0%' }}
+                        ></div>
+                      </div>
+                      <div className="text-right text-xs text-gray-500 mt-1">{formData.daysLeft} days left</div>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Accepts donations between ${formData.min_donation} and ${formData.max_donation} in {formData.currency}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Photo/Video Upload */}
               <div className="mb-6">
