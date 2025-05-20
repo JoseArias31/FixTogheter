@@ -1,19 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
-    
     SignInButton,
     SignUpButton,
     SignedIn,
     SignedOut,
     UserButton,
+    useUser
   } from '@clerk/nextjs'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, MessageSquare } from 'lucide-react'
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isLoaded, user } = useUser()
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm ">
@@ -60,7 +61,27 @@ export default function NavBar() {
               </SignUpButton>
             </SignedOut>
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              {isLoaded && user && (
+                <div className="flex items-center gap-3 bg-gradient-to-r from-emerald-50 to-teal-50 px-3 py-1.5 rounded-full border border-emerald-200 shadow-sm transition-all hover:shadow-md hover:border-emerald-300 group">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-emerald-600 group-hover:text-emerald-700 transition-colors" />
+                    <span className="font-medium text-emerald-700 group-hover:text-emerald-800 transition-colors">
+                      {user.firstName || user.username || 'User'}
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
+                    <UserButton 
+                      afterSignOutUrl="/" 
+                      appearance={{
+                        elements: {
+                          userButtonAvatarBox: "h-8 w-8 border-2 border-emerald-200 group-hover:border-emerald-300 transition-colors"
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </SignedIn>
           </div>
 
@@ -176,7 +197,27 @@ export default function NavBar() {
                 </SignedOut>
                 <SignedIn>
                   <div className="flex justify-center">
-                    <UserButton afterSignOutUrl="/" />
+                    {isLoaded && user && (
+                      <div className="flex items-center gap-3 bg-gradient-to-r from-emerald-50 to-teal-50 px-4 py-2.5 rounded-xl border border-emerald-200 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="h-5 w-5 text-emerald-600" />
+                          <span className="font-medium text-emerald-700 text-lg">
+                            {user.firstName || user.username || 'User'}
+                          </span>
+                        </div>
+                        <div className="relative">
+                          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-30"></div>
+                          <UserButton 
+                            afterSignOutUrl="/" 
+                            appearance={{
+                              elements: {
+                                userButtonAvatarBox: "h-9 w-9 border-2 border-emerald-200"
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </SignedIn>
               </div>

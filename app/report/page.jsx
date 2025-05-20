@@ -1,14 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Camera, MapPin, AlertCircle, DollarSign, Clock, Calendar, CreditCard, Toggle } from "lucide-react"
+import { Camera, MapPin, AlertCircle, DollarSign, Clock, Calendar, CreditCard, Toggle, X } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useUser } from '@clerk/nextjs'
+import { SignInButton, SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs'
 import { uploadImage } from "@/lib/storage/cliente";
 import { deleteImageFromBucket } from "@/lib/storage/deleteImageFromBucket";
+import { toast } from "react-hot-toast";
 
 export default function ReportIssuePage() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
   const [location, setLocation] = useState(null)
   const [isLocating, setIsLocating] = useState(false)
   const [files, setFiles] = useState([])
@@ -39,6 +43,9 @@ export default function ReportIssuePage() {
     daysLeft: 7
   })
 
+  // We'll use conditional rendering instead of redirecting
+
+  // Populate form with user data if available
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -211,6 +218,9 @@ export default function ReportIssuePage() {
   }
 
   return (
+    <>
+      <SignedIn>
+        {/* Show the report form only to signed-in users */}
     <div className="min-h-screen bg-gray-50  mt-16">
     
       {/* Main Content */}
@@ -291,9 +301,10 @@ export default function ReportIssuePage() {
                   type="number"
                   id="compensation"
                   name="compensation"
-                  value={formData.compensation}
+                  value={formData.compensation } 
                   onChange={handleInputChange}
-                  placeholder="Add a Donation (optional)"
+                  placeholder="Add a Donation"
+                  required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 />
                       </div>
@@ -789,5 +800,39 @@ export default function ReportIssuePage() {
         </div>
       </main>
     </div>
+      </SignedIn>
+
+      <SignedOut>
+        {/* Sign-in/Sign-up Modal for unauthenticated users */}
+        <div className="min-h-screen bg-gray-50 mt-16 flex items-center justify-center">
+          <div className="max-w-md w-full bg-white rounded-xl shadow-md p-8 m-4">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Authentication Required</h2>
+              <p className="text-gray-600 mb-6">
+                Please sign in or create an account to report an issue. Your contribution helps make our community better.
+              </p>
+              
+              <div className="flex flex-col gap-4">
+                <SignInButton mode="modal">
+                  <button className="w-full py-2 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium flex items-center justify-center">
+                    Sign In
+                  </button>
+                </SignInButton>
+                
+                <SignUpButton mode="modal">
+                  <button className="w-full py-2 px-4 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors font-medium flex items-center justify-center">
+                    Create Account
+                  </button>
+                </SignUpButton>
+                
+                <Link href="/" className="text-gray-500 hover:text-emerald-600 transition-colors text-sm mt-2">
+                  Return to Home
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SignedOut>
+    </>
   )
 }

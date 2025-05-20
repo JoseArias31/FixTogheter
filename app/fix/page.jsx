@@ -220,13 +220,19 @@ export default function FixPage() {
   </button>
 
 
-  <button
+  <Link
+    href={`/fix/${issue.id}`}
     className={`w-full md:flex-1 rounded-lg font-medium flex items-center justify-center transition-colors ${
       issue.status === "funded"
         ? "p-2 bg-emerald-600 text-white hover:bg-emerald-700"
         : "p-2 bg-gray-200 text-gray-500 cursor-not-allowed"
     }`}
-    disabled={issue.status !== "funded"}
+    aria-disabled={issue.status !== "funded"}
+    onClick={(e) => {
+      if (issue.status !== "funded") {
+        e.preventDefault();
+      }
+    }}
   >
     {issue.status === "funded" ? (
       <>
@@ -239,7 +245,7 @@ export default function FixPage() {
         Awaiting Funding
       </>
     )}
-  </button>
+  </Link>
 
   <Link
     href={`/fix/${issue.id}`}
@@ -375,6 +381,7 @@ export default function FixPage() {
           </div>
         </div>
       )}
+
     </div>
   )
 }
