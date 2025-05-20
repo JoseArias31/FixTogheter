@@ -89,7 +89,7 @@ return(
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; {new Date().getFullYear()} FixTogether. All rights reserved. Developer by <a className="underline" target="blank" href="https://jose-arias-portfolio.vercel.app/">Jose Arias</a></p>
+            <p>&copy; {new Date().getFullYear()} FixTogether. All rights reserved. Developed by <a className="underline" target="blank" href="https://jose-arias-portfolio.vercel.app/">Jose Arias</a></p>
           </div>
         </div>
       </footer>
