@@ -1,12 +1,11 @@
 import { type Metadata } from 'next'
 import NavBar from '../components/navBar'
 import Footer from '../components/footer'
-import {
-  ClerkProvider
-
-} from '@clerk/nextjs'
 import { Inter, Roboto_Mono } from 'next/font/google'
 import './globals.css'
+
+// Importaciones del lado del cliente se manejarán en un componente cliente separado
+import ClientLayout from './client-layout'
 
 const geistSans = Inter({
   variable: '--font-geist-sans',
@@ -31,11 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="antialiased">
-        <ClerkProvider>
-          <NavBar />
+        <ClientLayout>
           {children}
-          <Footer />
-        </ClerkProvider>
+        </ClientLayout>
       </body>
     </html>
   )
